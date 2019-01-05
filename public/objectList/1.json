@@ -1,0 +1,54 @@
+var fileData = [
+    {
+        "id":2312,
+        "type":"isogon",
+        "position":[400,500],
+        "rotation":[0,0],
+        "scale":[1,1],
+        "shape":{
+            "n":3,
+            "r":50,
+            "x":100,
+            "y":100
+        },
+        "style":{
+
+        }
+    },
+    {
+        "id":2313,
+        "type":"rect",
+        "position":[400,700],
+        "rotation":[0,0],
+        "scale":[1,1],
+        "shape":{
+            "height":50,
+            "r":0,
+            "width":50,
+            "x":100,
+            "y":100  //如果没有初始化值会被0覆盖，问题在于判断函数，待修改
+        },
+        "style":{
+
+        }
+    },
+    {
+        "id":2314,
+        "type":"house",
+        "position":[300,100],
+        "rotation":[0,0],
+        "scale":[1,1],
+        "shape":{
+            "n":3,
+            "r":40,
+            "r0":20,
+            "cx":100,
+            "cy":100
+        },
+        "style":{
+            "fill":"none",
+            "stroke":"green"
+        }
+    }
+]
+

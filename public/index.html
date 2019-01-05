@@ -1,12 +1,246 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>SyncDataDemo</title>
-
+    <title></title>
+    <meta charset="utf-8" />
+    <style type="text/css">
+        .btn{
+            display: inline-block
+        }
+      </style>
+    
 </head>
 <body>
+   
+    
+    <div id="canvas" style="width:1418px;height:904px;border:1px dashed" ></div>
+    <div class='btn' style="color:black;" ><Button onclick=addTriangle() style="background-image:linear-gradient(#f5c153,#ea920d)">添加三角形</Button></div>
+    <div class='btn' style="color:black;" ><Button onclick=addRect() style="background-image:linear-gradient(#f5c153,#ea920d)">添加矩形</Button></div>
+    <div class='btn' style="color:black;" ><Button onclick=addHouse() style="background-image:linear-gradient(#f5c153,#ea920d)">添加组合图形</Button></div>
+    <div class='btn' style="color:black;" ><Button onclick=displayList() style="background-image:linear-gradient(#f5c153,#ea920d)">显示对象列表</Button></div>
+    <div class='btn' style="color:black;" ><Button onclick=traverse() style="background-image:linear-gradient(#f5c153,#ea920d)">遍历列表</Button></div>
+    <div class='btn' style="color:black;" ><Button onclick=ClearShape() style="background-image:linear-gradient(#f5c153,#ea920d)">清空画布</Button></div>
+    <div class='btn' style="color:black;" ><Button onclick=Clear() style="background-image:linear-gradient(#f5c153,#ea920d)">删除元素</Button></div>
+    <div class='btn' ><Button onclick=restore() style="background-image:linear-gradient(#f5c153,#ea920d)">恢复</Button></div>
+    <!--div class='btn' ><Button onclick=addApp() style="background-image:linear-gradient(#f5c153,#ea920d)">苹果</Button></div-->
+    <div class='btn' ><Button onclick=edit() style="background-image:linear-gradient(#f5c153,#ea920d)">编辑</Button></div>
+    <div class='btn' ><Button onclick=otherEdit() style="background-image:linear-gradient(#f5c153,#ea920d)">编辑键值对</Button></div>
+    <script src="./dist/srender.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/main.js"></script>    
+    <script src="./objectList/1.json"></script>
+    <script type="text/javascript">
+    
+
+    console.log("aa")
+        var socket = io();
+        console.log(window.location)
+        console.log("window.location")
+            //some variable
+            var username = 'bing';
+            var connected = false;
+            var editting = false;
+        
+            socket.emit('add user', username);
+        
+            socket.on('login',(data)=>{
+                connected = true;
+                console.log("numOfUsers is "+data);
+                console.log("socket.id is"+socket.id);
+            });
+        
+            socket.on('user joined',(data)=>{
+                console.log(data.username+" come in");
+            });
+        
+    
+    var dom=document.getElementById("canvas")
+    var elementStyle = {
+        stroke: '#ccc',
+        fill: 'white',
+       // lineDash: [5, 5, 10, 10],
+    };
+    var jsonService=[
+        {
+            type:'Isogon',
+            position:[600,300],
+            
+            shape:{
+            x: 100,
+            y: 100,
+            r:50,
+            n:3
+            }
+           
+        },
+        {
+            type:'House',
+            position:[300,600],
+            style:{
+            fill: 'none',
+            stroke: 'green'
+            },
+            shape:{
+            cx: 100,
+            cy: 100,
+            }
+           
+        }
+    ]
+    var handlerNames={}
+    var sr = srender.init(dom)
+    var w = sr.getWidth();
+    var h = sr.getHeight();
+    ajax()
+ //   sr.initWithOthers(fileData)
+    //
+   // var img = new srender.Image({style:{image:"https://www.google.com.sg/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"}})
+   // sr.add(img)
+    var select
+    var i=0
+    var nowShape
+    var lastList
+    var lastRoots
+    var qua = Math.PI
+    function edit(){
+     //   nowShape.attr('scale',[2,2])//'position':[w/2,h/2],
+        nowShape.attr({
+    style: {
+        fill: 'red'
+    },
+   // origin:[0,0],
+    rotation:[(nowShape.rotation[0]+qua)%(2*qua),0],//
+   scale:[2,2]
+
+})
+  // nowShape.rotation = qua
+    }
+    function otherEdit(){
+        sr.objectList.attr({
+            id:2312,
+            position:[700,500],
+        })
+    }
+    function Clear(){
+        console.log("从数组中删除元素:")
+       
+       
+        console.log(nowShape.id)
+        sr.remove(nowShape)
+        console.log("refresh")
+        traverse()
+    }
+    function decompose(datas){
+        var tempRoots=[]
+        ClearShape()
+        datas.forEach(function(data){
+            let type = data.type.charAt(0).toUpperCase()+data.type.slice(1)
+        //    console.log(type)
+            let obj = new srender[type]({
+                id:data.id,
+                style:data.style,
+                position:data.position, //data.shape!==undefined?
+                shape:data.shape,
+                scale:data.scale,
+                rotation:data.rotation,
+             //   origin:data.origin
+            })
+
+            sr.add(obj)
+        })
+
+    }
+    function traverse(){
+        var list=sr.storage.getDisplayList(true)
+        var list=sr.storage._roots
+        var len=list.length
+        console.log("当前元素为")
+        console.log(nowShape=list[(i++)%len])
+      //  console.log(srender.Element)
+    }
+    function displayList(){
+       // console.log(sr.storage.getDisplayList(true))
+      console.log(sr.getObjectList())
+    }
+    
+    function ClearShape(){
+      //  lastRoots=sr.storage._roots
+     //   lastList=sr.storage.getDisplayList(true)
+     
+     lastList = sr.getObjectList()
+        sr.clear()
+        console.log("清空画布并保存数组:")
+      //  console.log(lastRoots)
+      console.log(lastList)
+    }
+    function restore(){
+        console.log("将保存数组覆盖当前数组")
+        console.log("refresh")
+        decompose(lastList)
+      //  sr.storage._roots=lastRoots
+      //  sr.painter.refresh(true)
+        
+    }
+    function addRect(){
+        var rect = new srender.Rect({
+            shape: {
+                 x: 200,
+                 y: 200,
+                width: 50,
+                 height: 50
+            },
+           // draggable:true
+        })
+        sr.add(rect)
+    }
+    function addTriangle(){
+        var tri=new srender.Isogon({
+        shape:{
+            x: 100,
+            y: 100,
+            r:50,
+            n:3
+        },
+        position:[400,700],
+     //   scale:[2,2],
+       // transform:[2,0,0,2,0,0],
+         })
+      //   tri.transform=[2,0,0,2,0,0]
+        sr.add(tri)
+    }
+    function addHouse(){
+        var house=new srender.House({
+        shape:{
+            cx: 100,
+            cy: 100,
+        },
+        style: {
+            fill: 'none',
+            stroke: 'green'
+        },
+      //  scale:[2,2]
+         })
+        sr.add(house)
+    }
+    function get(text){
+      //  var obj = JSON.parse(text);
+      var obj = text.data
+      sr.initWithOthers(obj)
+    }
+    function ajax(){
+        var script = document.createElement("script");
+        script.src = "objectList/mes.json?cb=get";
+        document.body.insertBefore(script,document.body.firstChild)
+    }
+    function write(){
+
+    }
+    
+     setInterval("ajax()",5000);
+    </script>
 </body>
+
+
+
 </html>
+
+<!--style="border:1px dashed gray;">
