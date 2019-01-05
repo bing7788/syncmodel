@@ -4,7 +4,7 @@
   "description": "Collaboration",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "start": "node index.js"
   },
   "keywords": [
     "socket.io"

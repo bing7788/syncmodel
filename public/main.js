@@ -12,7 +12,12 @@
 
     socket.on('login',(data)=>{
         connected = true;
+        console.log("numOfUsers is "+data);
         console.log("socket.id is"+socket.id);
+    });
+
+    socket.on('user joined',(data)=>{
+        console.log(data.username+" come in");
     });
 
 })();
