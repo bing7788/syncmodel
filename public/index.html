@@ -31,28 +31,43 @@
     <script type="text/javascript">
     
 
-    console.log("aa")
+   
         var socket = io();
-        console.log(window.location)
-        console.log("window.location")
-            //some variable
-            var username = 'bing';
-            var connected = false;
-            var editting = false;
         
+        var username = 'bing';
+        var connected = false;
+        var editting = true;
+       
             socket.emit('add user', username);
         
             socket.on('login',(data)=>{
                 connected = true;
-                console.log("numOfUsers is "+data);
+                console.log("numOfUsers is "+JSON.stringify(data));
                 console.log("socket.id is"+socket.id);
             });
         
             socket.on('user joined',(data)=>{
                 console.log(data.username+" come in");
             });
+           
+            socket.on('update data',(data)=>{
+                console.log("aa")
+                console.log(data+" ooo");
+            });
         
-    
+    /**
+     * 用于向服务器传递msg的函数，其参数应为msg
+     * 
+     */
+    function toServe(msg){
+      
+       console.log(msg)
+   
+        socket.emit('update data', JSON.stringify(msg));
+        
+    }
+   
+   
     var dom=document.getElementById("canvas")
     var elementStyle = {
         stroke: '#ccc',
@@ -90,6 +105,7 @@
     var sr = srender.init(dom)
     var w = sr.getWidth();
     var h = sr.getHeight();
+
     ajax()
  //   sr.initWithOthers(fileData)
     //
@@ -231,9 +247,7 @@
         script.src = "objectList/mes.json?cb=get";
         document.body.insertBefore(script,document.body.firstChild)
     }
-    function write(){
-
-    }
+    sr.initWithCb(toServe)
     
      setInterval("ajax()",5000);
     </script>
