@@ -61,7 +61,7 @@ io.on('connection',(socket)=>{
     //when the client emits 'update data',this listen and executes
     socket.on('update data',(data)=>{
         //server will broadcast to all client to execute 'update data'
-        socket.emit('update data',{message:data})
+        socket.emit('update data',data)
         /*
         socket.broadcast.emit('update data',{
             username: socket.username,

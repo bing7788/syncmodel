@@ -17,7 +17,7 @@ get({
             }
         },
         {
-            "id":2316,
+            "id":2313,
             "type":"isogon",
             "position":[300,500],
             "rotation":[0,0],
@@ -33,7 +33,7 @@ get({
             }
         },
         {
-            "id":2313,
+            "id":2314,
             "type":"rect",
             "position":[400,700],
             "rotation":[0,0],
@@ -50,7 +50,7 @@ get({
             }
         },
         {
-            "id":2314,
+            "id":2315,
             "type":"house",
             "position":[300,100],
             "rotation":[0,0],

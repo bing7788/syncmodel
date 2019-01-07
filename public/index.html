@@ -51,8 +51,9 @@
             });
            
             socket.on('update data',(data)=>{
-                console.log("aa")
-                console.log(data+" ooo");
+               
+            var msg = JSON.parse(data);
+            resolve(msg)
             });
         
     /**
@@ -60,13 +61,27 @@
      * 
      */
     function toServe(msg){
-      
-   //    console.log(msg)
-     //  socket.emit('add user', msg);
-        socket.emit('update data', JSON.stringify(msg));
-        
+        socket.emit('update data', JSON.stringify(msg));   
     }
-   
+    function resolve(msg){
+        let el = msg.el;
+        let tag = msg.tag;
+        switch(msg.type){
+            case 'attr':
+                switch(tag){
+                    case 'position':
+                    sr.attr(el,tag)
+                    break;
+                }
+                break;
+            case 'add':
+                sr.add(el)
+                break;
+            case 'delete':
+                sr.remove(el)
+                break;
+        }
+    }
    
     var dom=document.getElementById("canvas")
     var elementStyle = {
