@@ -61,8 +61,8 @@
      */
     function toServe(msg){
       
-       console.log(msg)
-   
+   //    console.log(msg)
+     //  socket.emit('add user', msg);
         socket.emit('update data', JSON.stringify(msg));
         
     }
@@ -249,7 +249,7 @@
     }
     sr.initWithCb(toServe)
     
-     setInterval("ajax()",5000);
+ //    setInterval("ajax()",5000);
     </script>
 </body>
 

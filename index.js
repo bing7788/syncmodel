@@ -23,7 +23,7 @@ io.on('connection',(socket)=>{
     //when the client emits 'add user',this listens and executes
     socket.on('add user',(username)=>{
         //?
-        if(addedUser) return;
+     //   if(addedUser) return;
         
         //we store the username in the socket session for this client
         socket.username = username;
@@ -61,10 +61,13 @@ io.on('connection',(socket)=>{
     //when the client emits 'update data',this listen and executes
     socket.on('update data',(data)=>{
         //server will broadcast to all client to execute 'update data'
+        socket.emit('update data',{message:data})
+        /*
         socket.broadcast.emit('update data',{
             username: socket.username,
             message:data
         });
+        */
     });
 
     /**disconnection**/
