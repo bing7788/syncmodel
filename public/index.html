@@ -24,7 +24,7 @@
     <div class='btn' ><Button onclick=restore() style="background-image:linear-gradient(#f5c153,#ea920d)">恢复</Button></div>
     <!--div class='btn' ><Button onclick=addApp() style="background-image:linear-gradient(#f5c153,#ea920d)">苹果</Button></div-->
     <div class='btn' ><Button onclick=edit() style="background-image:linear-gradient(#f5c153,#ea920d)">编辑</Button></div>
-    <div class='btn' ><Button onclick=otherEdit() style="background-image:linear-gradient(#f5c153,#ea920d)">编辑键值对</Button></div>
+    <div class='btn' ><Button onclick=Pen() style="background-image:linear-gradient(#f5c153,#ea920d)">画笔</Button></div>
     <script src="./dist/srender.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./objectList/1.json"></script>
@@ -70,8 +70,11 @@
             case 'attr':
                 switch(tag){
                     case 'position':
-                    sr.attr(el,tag)
-                    break;
+                        sr.attr(el,tag)
+                        break;
+                    case 'shape':
+                        sr.attr(el,tag,true)
+                        break;
                 }
                 break;
             case 'add':
@@ -262,6 +265,67 @@
         script.src = "objectList/mes.json?cb=get";
         document.body.insertBefore(script,document.body.firstChild)
     }
+    //******************************************************penDrawer
+   var lockFlag=false;
+   var s; //定义路径对象
+   var sL = []; //路径数组
+   var isDraw = false;
+            function pen1(e) {
+                isDraw = true; //表示正在画线了
+                s = new srender.Polyline({ //初始化线条
+                    shape: {
+                        points: sL,
+                        smooth: 'spline',
+                    },
+                    style: {
+                    stroke: 'rgba(220, 20, 60, 0.8)',
+                     lineWidth: 2
+                      },
+                      draggable:true,
+                });
+             
+                sr.add(s); //将线条添加到图层上
+            }
+            function pen2(e) {
+                if (isDraw) { //判断是否是画线状态
+                    var x = e.event.zrX;
+                    var y = e.event.zrY; //获取鼠标位置
+                    sL.push([x, y]); //将位置存入数组
+                    /*
+                    zr.modShape(s.id, {
+                        pointList: sL
+                    }); //更新线条对象的位置数组
+                    */
+                    s.attr({
+                        shape: {
+                        pointList: sL,
+                    }
+                    })
+                //    sr.refresh(); //刷新图层
+                }
+            }
+            function pen3(e) {
+                isDraw = false; //退出画线状态
+                sL = []; //清空线条路经,若不清空将会和上次画线连接到一起
+                // s=null;    //清空线条对象
+            }
+            //console.log(sr.handler._$handlers['mousedown'])
+   function Pen(){
+       if(lockFlag){
+           lockFlag=false;
+           sr.off('mousedown',pen1);
+            sr.off('mousemove',pen2);
+            sr.off('mouseup',pen3);
+            return;
+        }
+      
+        
+            sr.on('mousedown',pen1);
+            sr.on('mousemove',pen2);
+            sr.on('mouseup',pen3);
+            lockFlag=true;
+        }
+   //*******************************************************************************
     sr.initWithCb(toServe)
     
  //    setInterval("ajax()",5000);
