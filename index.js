@@ -6,6 +6,32 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
+//redis connection && sub/pub
+var redis = require('redis');
+var sub = redis.createClient(),pub = redis.createClient();
+var msg = 0;
+
+sub.on('subscribe',function(channel,count){
+    pub.publish("a nice channel","I am sending a message.");
+    pub.publish("a nice channel", "I am sending a second message.");
+    pub.publish("a nice channel", "I am sending my last message.");
+    console.log(channel);
+    console.log(count);
+});
+
+sub.on('message',function(channel,message){
+    console.log('sub channel '+channel+":"+message);
+    msg += 1;
+    if(msg === 3){
+        sub.unsubscribe();
+        sub.quit();
+        pub.quit();
+    }
+})
+
+sub.subscribe("a nice channel");
+
+
 server.listen(port, ()=>{
     console.log('SyncServer listening at port %d',port);
 });
